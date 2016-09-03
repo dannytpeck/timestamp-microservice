@@ -3,9 +3,9 @@ var mustacheExpress = require('mustache-express');
 
 var app = express();
 
-app.engine('html', mustacheExpress());
+app.engine('mustache', mustacheExpress());
 
-app.set('view engine', 'html');
+app.set('view engine', 'mustache');
 app.set('views', __dirname + '/views');
 
 app.use(express.static(__dirname + '/public'));
@@ -15,7 +15,28 @@ app.get('/', function (req, res) {
 });
 
 app.get('/:date', function (req, res) {
-  res.send(req.params);
+  var date;
+  
+  if (!isNaN(req.params.date)) {
+    date = new Date(Number(req.params.date) * 1000);
+    
+    res.json({
+      unix: Number(req.params.date),
+      natural: date.toLocaleString('en-us', { month: 'long', day: 'numeric', year: 'numeric' })
+    });
+  } else {
+    date = new Date(req.params.date);
+    
+    if (!isNaN(date.getTime())) {
+      res.json({
+        unix: date.getTime() / 1000,
+        natural: date.toLocaleString('en-us', { month: 'long', day: 'numeric', year: 'numeric' })
+      });
+    } else {
+      res.json({ unix: null, natural: null });
+    }
+  }
+
 });
 
 app.listen(8080, function () {
