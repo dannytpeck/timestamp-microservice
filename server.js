@@ -1,7 +1,8 @@
 var express = require('express');
 var mustacheExpress = require('mustache-express');
-
 var app = express();
+
+var port = process.env.PORT || 8080;
 
 app.engine('mustache', mustacheExpress());
 
@@ -39,6 +40,6 @@ app.get('/:date', function (req, res) {
 
 });
 
-app.listen(8080, function () {
-  console.log('App listening on port 8080!');
+app.listen(port, function () {
+  console.log('App listening on port ' + port);
 });
